@@ -24,6 +24,8 @@ export default defineConfig({
   webServer: {
     command: `pnpm start --port ${port}`,
     url: `http://localhost:${port}/api/health`,
+    // Admin test sign-in (pick a role). Allowed only because the base URL is localhost.
+    env: { APP_BASE_URL: `http://localhost:${port}`, ADMIN_DEV_SIGN_IN: "true" },
     reuseExistingServer: !process.env.CI,
     timeout: 120_000,
   },

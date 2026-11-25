@@ -4,6 +4,14 @@ import { ForbiddenError, UnauthorizedError } from "./errors";
 export const roles = ["super_admin", "event_admin", "attendance_manager", "read_only"] as const;
 export type Role = (typeof roles)[number];
 
+/** How each role is named on screen (spec §3.1). */
+export const roleLabels: Record<Role, string> = {
+  super_admin: "Super Admin",
+  event_admin: "Event Admin",
+  attendance_manager: "Attendance Manager",
+  read_only: "Read-only",
+};
+
 /** A role grant; eventId limits it to one event (spec §12: roles "optionally event-scoped"). */
 export interface RoleGrant {
   role: Role;
@@ -12,6 +20,8 @@ export interface RoleGrant {
 
 export interface AdminSession {
   userId: string;
+  /** Shown in the admin user menu; never logged. */
+  displayName?: string;
   grants: RoleGrant[];
 }
 

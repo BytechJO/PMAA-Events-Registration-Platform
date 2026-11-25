@@ -29,6 +29,9 @@ export const envSchema = z.object({
 
   TURNSTILE_SITE_KEY: optional,
   TURNSTILE_SECRET_KEY: optional,
+
+  /** Local test sign-in for the admin (pick a role, no Microsoft account). Only on localhost; see devSignInEnabled. */
+  ADMIN_DEV_SIGN_IN: z.stringbool().optional(),
 });
 
 export type Env = z.infer<typeof envSchema>;
@@ -47,5 +50,32 @@ export function loadEnv(source: Record<string, string | undefined> = process.env
     const problems = result.error.issues.map((i) => `${i.path.join(".") || "(root)"}: ${i.message}`);
     throw new EnvError(problems);
   }
+  devSignInEnabled(source);
   return result.data;
+}
+
+const LOCAL_HOSTS = new Set(["localhost", "127.0.0.1", "[::1]"]);
+
+function isLocalUrl(value: string | undefined): boolean {
+  try {
+    return value !== undefined && LOCAL_HOSTS.has(new URL(value).hostname);
+  } catch {
+    return false;
+  }
+}
+
+/**
+ * Whether the admin test sign-in is on. It lets anyone pick an admin role without a Microsoft account,
+ * so it only works when the app runs on this machine: APP_BASE_URL on localhost, or `next dev` with no
+ * APP_BASE_URL. Turned on anywhere else (staging, production), it throws, so the app refuses to start.
+ */
+export function devSignInEnabled(source: Record<string, string | undefined> = process.env): boolean {
+  const flag = source.ADMIN_DEV_SIGN_IN?.trim().toLowerCase();
+  // Same truthy words as z.stringbool().
+  if (!flag || !["true", "1", "yes", "on", "y", "enabled"].includes(flag)) return false;
+  const local = source.APP_BASE_URL ? isLocalUrl(source.APP_BASE_URL) : source.NODE_ENV === "development";
+  if (!local) {
+    throw new EnvError(["ADMIN_DEV_SIGN_IN: allowed only when APP_BASE_URL is localhost; remove it outside a developer machine"]);
+  }
+  return true;
 }
