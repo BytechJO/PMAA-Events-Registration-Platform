@@ -26,6 +26,18 @@ jobs:
         with:
           fetch-depth: 1
 
+      # Install dependencies so the review can read the installed versions' docs and types
+      # (Next.js 16 ships its docs in node_modules/next/dist/docs). No install scripts run.
+      - uses: pnpm/action-setup@v6
+
+      - uses: actions/setup-node@v6
+        with:
+          node-version-file: .nvmrc
+          cache: pnpm
+
+      - name: Install (for library docs and types only)
+        run: pnpm install --frozen-lockfile --ignore-scripts
+
       - name: Claude review
         id: review
         uses: anthropics/claude-code-action@v1
@@ -43,6 +55,11 @@ jobs:
                Start it with "MUST-FIX:" when it breaks a review rule, is a bug or a security issue, or new code has no tests.
                Start it with "SUGGESTION:" otherwise. Keep comments short and concrete.
             4. Post one summary comment with `gh pr comment`: the number of MUST-FIX and SUGGESTION findings, then a short list.
+            Library versions: this repo uses versions newer than your training data (Next.js 16, React 19; see apps/web/package.json
+            and apps/web/AGENTS.md), and their APIs differ from older releases. Dependencies are installed. Before you call a framework
+            or library API missing, wrong or deprecated, check the installed version: Next.js docs are in
+            apps/web/node_modules/next/dist/docs/, and every package has its types and source under node_modules. Name the file you
+            checked in the comment. Without evidence from the installed files, write at most a SUGGESTION to verify it, never a MUST-FIX.
             Do not comment on style that lint already checks. Do not invent problems: no finding is a fine result.
             Return must_fix_count (the number of MUST-FIX findings) and a one-line summary.
           claude_args: |
