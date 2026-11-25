@@ -1,0 +1,20 @@
+# Local PostgreSQL for development and tests: docker compose up -d db
+services:
+  db:
+    image: postgres:17
+    environment:
+      POSTGRES_USER: pmaa
+      POSTGRES_PASSWORD: pmaa
+      POSTGRES_DB: pmaa
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+      - ./scripts/create-test-db.sql:/docker-entrypoint-initdb.d/create-test-db.sql:ro
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U pmaa"]
+      interval: 5s
+      retries: 10
+
+volumes:
+  pgdata:

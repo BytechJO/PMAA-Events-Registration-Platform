@@ -1,0 +1,64 @@
+# Automatic Claude review on every pull request (no manual code reviews on this project).
+# Claude checks the change against "Review rules" in CLAUDE.md, comments on the lines,
+# and the job fails when it finds a MUST-FIX issue, so the pull request cannot merge.
+# Needs one repository secret: ANTHROPIC_API_KEY, or CLAUDE_CODE_OAUTH_TOKEN (set up by /install-github-app).
+name: Claude review
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened, ready_for_review]
+
+concurrency:
+  group: claude-review-${{ github.event.pull_request.number }}
+  cancel-in-progress: true
+
+jobs:
+  review:
+    if: github.event.pull_request.draft == false
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    permissions:
+      contents: read
+      pull-requests: write
+      id-token: write
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          fetch-depth: 1
+
+      - name: Claude review
+        id: review
+        uses: anthropics/claude-code-action@v1
+        with:
+          anthropic_api_key: ${{ secrets.ANTHROPIC_API_KEY }}
+          claude_code_oauth_token: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
+          prompt: |
+            REPO: ${{ github.repository }}
+            PR NUMBER: ${{ github.event.pull_request.number }}
+
+            Review this pull request. The PR branch is checked out in the working directory.
+            1. Read CLAUDE.md, especially "Review rules". Those rules are the standard.
+            2. Read the diff with `gh pr diff` and the ticket in the title.
+            3. For each problem, post an inline comment with `mcp__github_inline_comment__create_inline_comment` (confirmed: true).
+               Start it with "MUST-FIX:" when it breaks a review rule, is a bug or a security issue, or new code has no tests.
+               Start it with "SUGGESTION:" otherwise. Keep comments short and concrete.
+            4. Post one summary comment with `gh pr comment`: the number of MUST-FIX and SUGGESTION findings, then a short list.
+            Do not comment on style that lint already checks. Do not invent problems: no finding is a fine result.
+            Return must_fix_count (the number of MUST-FIX findings) and a one-line summary.
+          claude_args: |
+            --allowedTools "mcp__github_inline_comment__create_inline_comment,Bash(gh pr comment:*),Bash(gh pr diff:*),Bash(gh pr view:*),Read,Glob,Grep"
+            --json-schema '{"type":"object","properties":{"must_fix_count":{"type":"integer"},"summary":{"type":"string"}},"required":["must_fix_count","summary"]}'
+
+      - name: Block the merge on MUST-FIX findings
+        env:
+          RESULT: ${{ steps.review.outputs.structured_output }}
+        run: |
+          result="${RESULT:-}"
+          [ -z "$result" ] && result='{}'
+          count=$(echo "$result" | jq -r '.must_fix_count // 0')
+          echo "MUST-FIX findings: $count"
+          echo "$result" | jq -r '.summary // empty'
+          if [ "$count" -gt 0 ]; then
+            echo "::error::Claude found $count MUST-FIX issue(s). Fix them and push again."
+            exit 1
+          fi

@@ -1,0 +1,21 @@
+{
+  "name": "@pmaa/integrations",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Adapters for outside services (Microsoft Graph mail and Teams, WhatsApp), each with a fake for tests.",
+  "exports": {
+    ".": "./src/index.ts"
+  },
+  "scripts": {
+    "lint": "eslint .",
+    "typecheck": "tsc -p tsconfig.json",
+    "test": "vitest run"
+  },
+  "devDependencies": {
+    "@types/node": "catalog:",
+    "eslint": "catalog:",
+    "typescript": "catalog:",
+    "vitest": "catalog:"
+  }
+}

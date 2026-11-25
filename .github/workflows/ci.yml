@@ -1,0 +1,77 @@
+# Runs every check on every push to any branch and on every pull request.
+# Required on dev, staging and main (branch protection): nothing merges while this is red.
+name: CI
+
+on:
+  push:
+    branches: ["**"]
+  pull_request:
+
+concurrency:
+  group: ci-${{ github.workflow }}-${{ github.event_name }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  checks:
+    name: Lint, types, tests, build, e2e
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    services:
+      postgres:
+        image: postgres:17
+        env:
+          POSTGRES_USER: pmaa
+          POSTGRES_PASSWORD: pmaa
+          POSTGRES_DB: pmaa_test
+        ports: ["5432:5432"]
+        options: >-
+          --health-cmd "pg_isready -U pmaa"
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 10
+    env:
+      TEST_DATABASE_URL: postgres://pmaa:pmaa@localhost:5432/pmaa_test
+      DATABASE_URL: postgres://pmaa:pmaa@localhost:5432/pmaa_test
+      REQUIRE_DB_TESTS: "1"
+      APP_BASE_URL: http://localhost:3100
+    steps:
+      - uses: actions/checkout@v6
+
+      - uses: pnpm/action-setup@v6
+
+      - uses: actions/setup-node@v6
+        with:
+          node-version-file: .nvmrc
+          cache: pnpm
+
+      - name: Install
+        run: pnpm install --frozen-lockfile
+
+      - name: Lint
+        run: pnpm lint
+
+      - name: Type-check
+        run: pnpm typecheck
+
+      - name: Unit and integration tests (real PostgreSQL)
+        run: pnpm test
+
+      - name: Migrations apply cleanly
+        run: pnpm db:migrate
+
+      - name: Build
+        run: pnpm build
+
+      - name: Install Playwright browser
+        run: pnpm --filter @pmaa/web exec playwright install --with-deps chromium
+
+      - name: End-to-end tests
+        run: pnpm test:e2e
+
+      - name: Keep the Playwright report when e2e fails
+        if: failure()
+        uses: actions/upload-artifact@v6
+        with:
+          name: playwright-report
+          path: apps/web/playwright-report
+          retention-days: 7

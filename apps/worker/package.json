@@ -1,0 +1,27 @@
+{
+  "name": "@pmaa/worker",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Background worker: outbox dispatch, emails, Graph and WhatsApp calls, reminders, certificates (pg-boss).",
+  "scripts": {
+    "dev": "tsx watch src/index.ts",
+    "start": "tsx src/index.ts",
+    "lint": "eslint .",
+    "typecheck": "tsc -p tsconfig.json",
+    "test": "vitest run"
+  },
+  "dependencies": {
+    "@pmaa/core": "workspace:*",
+    "@pmaa/integrations": "workspace:*",
+    "pg-boss": "^12.39.0",
+    "pino": "^10.4.0"
+  },
+  "devDependencies": {
+    "@types/node": "catalog:",
+    "eslint": "catalog:",
+    "tsx": "^4.23.15",
+    "typescript": "catalog:",
+    "vitest": "catalog:"
+  }
+}

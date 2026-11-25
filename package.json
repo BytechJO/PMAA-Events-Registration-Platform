@@ -1,0 +1,28 @@
+{
+  "name": "pmaa-events-registration-platform",
+  "private": true,
+  "description": "PMAA Events Registration Platform: webinar and workshop registration, Microsoft Teams, WhatsApp, attendance and certificates.",
+  "packageManager": "pnpm@12.23.0",
+  "engines": {
+    "node": ">=26"
+  },
+  "scripts": {
+    "dev": "pnpm --parallel --filter @pmaa/web --filter @pmaa/worker dev",
+    "build": "pnpm -r build",
+    "lint": "pnpm -r lint",
+    "typecheck": "pnpm -r typecheck",
+    "test": "pnpm -r test",
+    "test:e2e": "pnpm --filter @pmaa/web test:e2e",
+    "db:generate": "pnpm --filter @pmaa/db generate",
+    "db:migrate": "pnpm --filter @pmaa/db migrate",
+    "check": "pnpm lint && pnpm typecheck && pnpm test"
+  },
+  "devDependencies": {
+    "@eslint/js": "catalog:",
+    "@types/node": "catalog:",
+    "eslint": "catalog:",
+    "typescript": "catalog:",
+    "typescript-eslint": "catalog:",
+    "vitest": "catalog:"
+  }
+}
