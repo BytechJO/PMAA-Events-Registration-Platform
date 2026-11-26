@@ -8,6 +8,20 @@
       "when": 1795596054369,
       "tag": "0000_wakeful_stardust",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1795698767478,
+      "tag": "0001_core_tables",
+      "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1795698777835,
+      "tag": "0002_seed_roles",
+      "breakpoints": true
     }
   ]
 }
