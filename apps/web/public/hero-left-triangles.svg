@@ -1,0 +1,19 @@
+<svg width="640" height="560" viewBox="0 0 640 560" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="purple" x1="58" y1="274" x2="508" y2="274" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#4A1191"/>
+      <stop offset="1" stop-color="#B720C4"/>
+    </linearGradient>
+    <linearGradient id="pink" x1="118" y1="246" x2="500" y2="246" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#EE4CBA" stop-opacity=".68"/>
+      <stop offset="1" stop-color="#D60083" stop-opacity=".94"/>
+    </linearGradient>
+    <linearGradient id="soft" x1="118" y1="120" x2="532" y2="120" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#E8B9ED" stop-opacity=".72"/>
+      <stop offset="1" stop-color="#A864D4" stop-opacity=".42"/>
+    </linearGradient>
+  </defs>
+  <path d="M50 62C50 46 68 36 82 44L538 308C552 316 552 336 538 344L82 608C68 616 50 606 50 590V62Z" fill="url(#purple)" transform="translate(0 -48)"/>
+  <path d="M110 10C110 -6 128 -16 142 -8L532 218C546 226 546 246 532 254L142 480C128 488 110 478 110 462V10Z" fill="url(#soft)" transform="translate(0 28)"/>
+  <path d="M110 116C110 100 128 90 142 98L500 306C514 314 514 334 500 342L142 550C128 558 110 548 110 532V116Z" fill="url(#pink)" transform="translate(0 -34)"/>
+</svg>

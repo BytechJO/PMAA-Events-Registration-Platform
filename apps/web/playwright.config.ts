@@ -23,6 +23,7 @@ export default defineConfig({
   ],
   webServer: {
     command: `pnpm start --port ${port}`,
+    env: { PMAA_PUBLIC_EVENT_FIXTURE: "1" },
     url: `http://localhost:${port}/api/health`,
     reuseExistingServer: !process.env.CI,
     timeout: 120_000,

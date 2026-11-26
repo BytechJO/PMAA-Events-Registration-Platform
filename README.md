@@ -1,5 +1,11 @@
 # PMAA Events Registration Platform
 
+Preview the fixture-backed public webinar at
+`/webinars/creating-engaging-digital-content` with the web dev server.
+To preview it with a production build, set `PMAA_PUBLIC_EVENT_FIXTURE=1`
+when starting the built app. The fixture is disabled by default in production.
+Session registration links target the form being built in WBR-32.
+
 Webinar and workshop registration for teachers: public event pages and forms, Microsoft Teams webinars with personal join links, email and WhatsApp messages, attendance, PDF certificates and an admin dashboard.
 
 Plan, specification, screens and Jira tickets: [planning repo](https://github.com/BytechJO/docs-planning-webinar-registration-and-live-session-setup-for-teachers). New to the project? Read its `00_Claude_Team_Guide.pdf`, then the "Start here" sheet in the tickets workbook.

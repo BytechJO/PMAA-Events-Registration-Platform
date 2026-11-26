@@ -1,0 +1,97 @@
+.page {
+  --purple: #381967;
+  --pink: #cc2681;
+  --heading: "Bahnschrift SemiCondensed", "Arial Narrow", var(--font-geist-sans), sans-serif;
+  --poster-unit: min(1vw, 10px);
+  width: 100%;
+  min-height: 100vh;
+  color: #292038;
+  background: #f6effb;
+}
+
+.wrap { width: min(calc(100% - 1.5rem), 91%); margin-inline: auto; }
+
+.hero {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  min-height: min(58.2vw, 29rem);
+  padding-block: calc(4 * var(--poster-unit)) calc(5.3 * var(--poster-unit));
+  padding-inline: 5.1%;
+  background: linear-gradient(105deg, #f1e8f6 42%, #e9daf6 60%, #c8a9eb);
+}
+.heroContent { position: relative; z-index: 1; width: 46%; }
+.logo { width: calc(25 * var(--poster-unit)); height: auto; margin: 0 0 calc(4 * var(--poster-unit)) calc(-2.55 * var(--poster-unit)); }
+.heroMascot {
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  width: auto;
+  max-width: 55%;
+  height: 100%;
+  object-fit: contain;
+  object-position: right bottom;
+  mask-image: linear-gradient(to right, transparent, #000 6%);
+  pointer-events: none;
+}
+.tag {
+  display: flex;
+  align-items: center;
+  gap: calc(.65 * var(--poster-unit));
+  color: var(--purple);
+  font: 700 max(.65rem, calc(1.48 * var(--poster-unit))) / 1.2 Arial, sans-serif;
+  letter-spacing: -.02em;
+  text-transform: uppercase;
+}
+.tag img { width: calc(3.7 * var(--poster-unit)); height: auto; flex: none; }
+.tag span { padding: .55em .65em .6em 0; border-bottom: 1px solid currentColor; white-space: nowrap; }
+.hero h1 {
+  margin-block: calc(2.55 * var(--poster-unit)) calc(2.2 * var(--poster-unit));
+  color: var(--purple);
+  font: 800 max(1.3rem, calc(4.4 * var(--poster-unit))) / 1.48 var(--heading);
+}
+.hero h1 em { display: block; color: var(--pink); font-style: normal; }
+.intro { max-width: 38ch; color: #3a2d55; font-size: max(.82rem, calc(2.12 * var(--poster-unit))); line-height: 1.43; }
+
+.promos { display: grid; grid-template-columns: 1.1fr 1fr; gap: .8rem; margin-top: .8rem; }
+.footer { padding-block: .8rem; color: #fff; background: var(--purple); font-size: .77rem; }
+.footer > div { display: flex; flex-wrap: wrap; justify-content: space-between; gap: .4rem 1rem; }
+.footer a:hover { text-decoration: underline; }
+.page :where(a, h2):focus-visible { outline: 2px solid currentColor; outline-offset: 3px; }
+
+@media (min-width: 725px) {
+  .heroMascot {
+    width: 55%;
+    object-fit: cover;
+    object-position: right 43%;
+    mask-image: linear-gradient(to right, transparent, #000 10%);
+  }
+}
+
+@media (min-width: 64rem) {
+  .hero { padding-block: 1.7rem 3rem; }
+  .logo { width: 13rem; margin-bottom: 1.3rem; }
+  .hero h1 { margin-block: 1.05rem 1.2rem; line-height: 1.2; }
+}
+
+@media (max-width: 63.999rem) {
+  .promos { grid-template-columns: 1fr; }
+}
+
+@media (max-width: 40rem) {
+  .wrap { width: calc(100% - 1.5rem); }
+  .hero { padding: .9rem 1rem 1.75rem; }
+  .heroContent { width: 58%; }
+  .logo { width: 34vw; margin: 0 0 .85rem -4%; }
+  .tag { gap: .2rem; }
+  .tag img { width: 1rem; }
+  .tag span { padding-right: 0; white-space: normal; }
+  .hero h1 { margin-block: .65rem .8rem; line-height: 1.15; }
+  .heroMascot {
+    width: 46%;
+    height: auto;
+    mask-image: linear-gradient(to right, transparent, #000 9%), linear-gradient(to bottom, transparent, #000 12%);
+    mask-composite: intersect;
+  }
+  .promos { grid-template-columns: 1fr; }
+}
