@@ -32,6 +32,9 @@ export const envSchema = z.object({
 
   /** Local test sign-in for the admin (pick a role, no Microsoft account). Only on localhost; see devSignInEnabled. */
   ADMIN_DEV_SIGN_IN: z.stringbool().optional(),
+
+  /** Sample registrations for the public pages until the registration API lands (T022). Only on localhost; see publicSampleDataEnabled. */
+  PUBLIC_SAMPLE_DATA: z.stringbool().optional(),
 });
 
 export type Env = z.infer<typeof envSchema>;
@@ -51,6 +54,7 @@ export function loadEnv(source: Record<string, string | undefined> = process.env
     throw new EnvError(problems);
   }
   devSignInEnabled(source);
+  publicSampleDataEnabled(source);
   return result.data;
 }
 
@@ -70,12 +74,25 @@ function isLocalUrl(value: string | undefined): boolean {
  * APP_BASE_URL. Turned on anywhere else (staging, production), it throws, so the app refuses to start.
  */
 export function devSignInEnabled(source: Record<string, string | undefined> = process.env): boolean {
-  const flag = source.ADMIN_DEV_SIGN_IN?.trim().toLowerCase();
+  return localOnlyFlag("ADMIN_DEV_SIGN_IN", source);
+}
+
+/**
+ * Whether the public pages may show sample registrations (PUBLIC_SAMPLE_DATA), until the registration
+ * API reads real ones (T022). Same rule as the admin test sign-in: this machine only, or the app refuses to start.
+ */
+export function publicSampleDataEnabled(source: Record<string, string | undefined> = process.env): boolean {
+  return localOnlyFlag("PUBLIC_SAMPLE_DATA", source);
+}
+
+/** A developer-only switch: false when off, true on localhost, and throws when switched on anywhere else. */
+function localOnlyFlag(name: "ADMIN_DEV_SIGN_IN" | "PUBLIC_SAMPLE_DATA", source: Record<string, string | undefined>): boolean {
+  const flag = source[name]?.trim().toLowerCase();
   // Same truthy words as z.stringbool().
   if (!flag || !["true", "1", "yes", "on", "y", "enabled"].includes(flag)) return false;
   const local = source.APP_BASE_URL ? isLocalUrl(source.APP_BASE_URL) : source.NODE_ENV === "development";
   if (!local) {
-    throw new EnvError(["ADMIN_DEV_SIGN_IN: allowed only when APP_BASE_URL is localhost; remove it outside a developer machine"]);
+    throw new EnvError([`${name}: allowed only when APP_BASE_URL is localhost; remove it outside a developer machine`]);
   }
   return true;
 }
