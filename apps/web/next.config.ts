@@ -9,7 +9,8 @@ const nextConfig: NextConfig = {
   serverExternalPackages: ["pino"],
   turbopack: {
     rules: {
-      "*.css": {
+      // Preserve Next.js CSS Module exports for component styles.
+      "globals.css": {
         loaders: ["@tailwindcss/turbopack"],
         as: "*.css",
       },

@@ -11,6 +11,7 @@ export const envSchema = z.object({
   NODE_ENV: z.enum(["development", "test", "production"]).default("development"),
   APP_BASE_URL: z.url(),
   DATABASE_URL: z.string().min(1),
+  PMAA_PUBLIC_EVENT_FIXTURE: z.enum(["", "0", "1"]).optional(),
 
   AUTH_SECRET: optional,
   AUTH_MICROSOFT_ENTRA_ID_ID: optional,
@@ -38,6 +39,17 @@ export const envSchema = z.object({
 });
 
 export type Env = z.infer<typeof envSchema>;
+
+const publicEventFixtureEnv = envSchema.pick({ NODE_ENV: true, PMAA_PUBLIC_EVENT_FIXTURE: true });
+
+export function publicEventFixtureEnabled() {
+  const result = publicEventFixtureEnv.safeParse(process.env);
+  if (!result.success) return false;
+  const env = result.data;
+  return !env.PMAA_PUBLIC_EVENT_FIXTURE
+    ? env.NODE_ENV === "development"
+    : env.PMAA_PUBLIC_EVENT_FIXTURE === "1";
+}
 
 export class EnvError extends Error {
   constructor(public readonly problems: string[]) {
