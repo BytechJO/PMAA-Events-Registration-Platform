@@ -25,6 +25,8 @@ export default defineConfig({
     command: `pnpm start --port ${port}`,
     env: { PMAA_PUBLIC_EVENT_FIXTURE: "1" },
     url: `http://localhost:${port}/api/health`,
+    // Admin test sign-in (pick a role) and sample registrations. Allowed only because the base URL is localhost.
+    env: { APP_BASE_URL: `http://localhost:${port}`, ADMIN_DEV_SIGN_IN: "true", PUBLIC_SAMPLE_DATA: "true" },
     reuseExistingServer: !process.env.CI,
     timeout: 120_000,
   },
