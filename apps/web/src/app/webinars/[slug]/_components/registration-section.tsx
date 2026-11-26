@@ -37,7 +37,7 @@ export function RegistrationSection({ event }: { event: PublicEvent }) {
         </h2>
         {hasOpenSession && (
           <a
-            className="inline-flex min-w-[11rem] justify-center rounded-full bg-[#d93b92] px-6 py-2.5 [font-family:var(--heading)] text-[.95rem] leading-none font-extrabold uppercase transition-colors hover:bg-[#bd247f] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white lg:min-w-[16rem] lg:px-10 lg:py-3.5 lg:text-[1.1rem]"
+            className="inline-flex min-w-[11rem] justify-center rounded-full bg-[#bd247f] px-6 py-2.5 [font-family:var(--heading)] text-[.95rem] leading-none font-extrabold uppercase transition-colors hover:bg-[#a91763] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white lg:min-w-[16rem] lg:px-10 lg:py-3.5 lg:text-[1.1rem]"
             href="#sessions"
           >
             Register now

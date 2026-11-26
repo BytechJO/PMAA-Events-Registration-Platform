@@ -19,7 +19,7 @@ test("FR-002 server renders the public webinar with accessible session choices",
     "Creating Engaging Digital Content on the GROW LMS",
   );
   const registerNow = page.getByRole("link", { name: "Register now" });
-  await expect(registerNow).toHaveCSS("background-color", "rgb(169, 23, 99)");
+  await expect(registerNow).toHaveCSS("background-color", "rgb(189, 36, 127)");
   await registerNow.click();
   await expect(page).toHaveURL(/#sessions$/);
   await expect(page.getByText("Places available")).toBeAttached();
