@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { devSignInEnabled, EnvError, loadEnv } from "./env";
+import { devSignInEnabled, EnvError, loadEnv, publicSampleDataEnabled } from "./env";
 
 const base = { APP_BASE_URL: "http://localhost:3000", DATABASE_URL: "postgres://x" };
 
@@ -58,5 +58,23 @@ describe("devSignInEnabled (admin test sign-in, local only)", () => {
     ]) {
       expect(() => devSignInEnabled(env)).toThrow(EnvError);
     }
+  });
+});
+
+describe("publicSampleDataEnabled (sample registrations, local only)", () => {
+  it("is off unless switched on, and on for localhost", () => {
+    expect(publicSampleDataEnabled({ APP_BASE_URL: "http://localhost:3000" })).toBe(false);
+    expect(publicSampleDataEnabled({ APP_BASE_URL: "http://localhost:3000", PUBLIC_SAMPLE_DATA: "true" })).toBe(true);
+  });
+
+  it("refuses to start on a real domain, naming the variable", () => {
+    expect(() => publicSampleDataEnabled({ APP_BASE_URL: "https://pmaa.example.org", PUBLIC_SAMPLE_DATA: "true" })).toThrow(/PUBLIC_SAMPLE_DATA/);
+    expect(() => loadEnv({ ...base, APP_BASE_URL: "https://staging.example.org", PUBLIC_SAMPLE_DATA: "1" })).toThrow(/PUBLIC_SAMPLE_DATA/);
+  });
+
+  it("is independent of the admin test sign-in", () => {
+    const env = { APP_BASE_URL: "http://localhost:3000", ADMIN_DEV_SIGN_IN: "true" };
+    expect(devSignInEnabled(env)).toBe(true);
+    expect(publicSampleDataEnabled(env)).toBe(false);
   });
 });
